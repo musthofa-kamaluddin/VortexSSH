@@ -1,0 +1,9 @@
+node_modules/
+client/node_modules/
+client/dist/
+server/data/*.tmp
+server/data/*.json
+tests/mock_host_rsa
+.env
+.DS_Store
+Thumbs.db

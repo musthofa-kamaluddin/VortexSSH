@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  vortex-ssh:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vortex-ssh
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - vortex-data:/app/server/data
+    environment:
+      - PORT=3001
+      - HOST=0.0.0.0
+      - MASTER_KEY=vortex-ssh-default-super-secret-key-32b!
+
+volumes:
+  vortex-data:
+    driver: local

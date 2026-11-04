@@ -1,0 +1,20 @@
+{
+  "name": "vortex-ssh",
+  "version": "1.0.0",
+  "description": "VortexSSH - Modern Web-based SSH Terminal, SFTP Explorer & Server Manager",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "dev:server": "node --watch server/index.js",
+    "dev:client": "npm --prefix client run dev",
+    "dev": "node start-dev.js",
+    "start": "node server/index.js",
+    "build:client": "npm --prefix client run build",
+    "build": "npm --prefix client run build",
+    "test": "node tests/backend.test.js",
+    "mock-ssh": "node tests/mockSshServer.js"
+  },
+  "keywords": ["ssh", "terminal", "sftp", "xterm", "webssh", "devops", "server-management"],
+  "author": "Musthofa Kamaluddin",
+  "license": "MIT"
+}

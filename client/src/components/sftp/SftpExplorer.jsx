@@ -424,7 +424,7 @@ export function SftpExplorer() {
             <button
               onClick={() => fileInputRef.current?.click()}
               title="Upload File"
-              className="flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-medium rounded-md shadow-md shadow-indigo-600/20 transition-all"
+              className="flex items-center gap-1.5 px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded transition-colors shadow-sm"
             >
               <Upload className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Upload</span>

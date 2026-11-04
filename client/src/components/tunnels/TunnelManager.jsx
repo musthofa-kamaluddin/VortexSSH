@@ -117,7 +117,7 @@ export function TunnelManager() {
 
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white text-xs font-semibold rounded-lg shadow-lg shadow-indigo-500/20 transition-all"
+          className="flex items-center gap-2 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg shadow-sm transition-colors"
         >
           <Plus className="w-4 h-4" />
           <span>New Tunnel</span>
@@ -296,7 +296,7 @@ export function TunnelManager() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-semibold rounded-lg shadow-md transition-all"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-lg shadow-sm transition-colors"
               >
                 Create Tunnel
               </button>

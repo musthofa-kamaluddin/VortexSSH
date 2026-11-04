@@ -8,7 +8,7 @@ export function SshProvider({ children }) {
   const [sessions, setSessions] = useState([]);
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [splitSessionId, setSplitSessionId] = useState(null);
-  const [activeTab, setActiveTab] = useState('terminal'); // 'terminal' | 'sftp' | 'metrics' | 'tunnels' | 'snippets' | 'hosts'
+  const [activeTab, setActiveTab] = useState('hosts'); // Defaults to 'hosts' on first access
   const [terminalSplit, setTerminalSplit] = useState('single'); // 'single' | 'split-vertical' | 'split-horizontal'
   const [terminalTheme, setTerminalTheme] = useState('cyberpunk');
   const [fontSize, setFontSize] = useState(14);
@@ -129,6 +129,17 @@ export function SshProvider({ children }) {
     }
   };
 
+  const reorderSessions = (fromIndex, toIndex) => {
+    if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0) return;
+    setSessions(prev => {
+      const copy = [...prev];
+      if (fromIndex >= copy.length || toIndex >= copy.length) return prev;
+      const [moved] = copy.splice(fromIndex, 1);
+      copy.splice(toIndex, 0, moved);
+      return copy;
+    });
+  };
+
   return (
     <SshContext.Provider
       value={{
@@ -136,6 +147,8 @@ export function SshProvider({ children }) {
         refreshHosts,
         sessions,
         refreshSessions,
+        reorderSessions,
+        setSessions,
         activeSessionId,
         setActiveSessionId,
         splitSessionId,

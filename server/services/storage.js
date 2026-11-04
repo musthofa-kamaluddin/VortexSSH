@@ -59,61 +59,232 @@ export function decrypt(encryptedData, masterKey = CONFIG.MASTER_KEY) {
 }
 
 const DEFAULT_SNIPPETS = [
+  // System & Hardware
   {
     id: 'snip-1',
-    title: 'System & Hardware Info',
+    title: 'System & OS Summary',
     category: 'System',
-    command: 'uname -a && cat /etc/os-release && lscpu | grep "Model name"',
-    description: 'Displays kernel, OS distribution, and CPU details'
+    command: 'uname -srm && cat /etc/os-release | grep PRETTY_NAME && uptime -p',
+    description: 'Kernel version, OS distribution name, and system uptime'
   },
   {
     id: 'snip-2',
-    title: 'Disk Usage (Human Readable)',
-    category: 'Storage',
-    command: 'df -hT --exclude-type=tmpfs --exclude-type=devtmpfs',
-    description: 'Check partition usage and mounted filesystems'
+    title: 'CPU Hardware Specifications',
+    category: 'System',
+    command: 'lscpu | grep -E "Model name|Socket|Thread|NUMA|CPU\\(s\\)|MHz"',
+    description: 'Detailed CPU model, cores, frequency, and architecture'
   },
   {
     id: 'snip-3',
-    title: 'Memory Usage Breakdown',
-    category: 'Monitoring',
-    command: 'free -h --wide',
-    description: 'Quick snapshot of RAM, swap, and buffer cache'
+    title: 'Block Devices & Partition UUIDs',
+    category: 'System',
+    command: 'lsblk -o NAME,SIZE,FSTYPE,TYPE,MOUNTPOINT,UUID',
+    description: 'Inspect physical disks, partitions, file systems, and mount paths'
   },
+
+  // Storage & Disk
   {
     id: 'snip-4',
-    title: 'Top 10 Memory Consuming Processes',
-    category: 'Monitoring',
-    command: 'ps aux --sort=-%mem | awk \'NR<=11{print $1,$2,$3,$4,$11}\' | column -t',
-    description: 'Find processes eating the most RAM'
+    title: 'Filesystem Disk Usage',
+    category: 'Storage',
+    command: 'df -hT -x tmpfs -x devtmpfs -x squashfs',
+    description: 'Check mounted partition usage with filesystem types'
   },
   {
     id: 'snip-5',
-    title: 'Docker Quick Status',
-    category: 'Docker',
-    command: 'docker ps --format "table {{.ID}}\\t{{.Names}}\\t{{.Status}}\\t{{.Ports}}"',
-    description: 'Formatted view of running docker containers'
+    title: 'Top 10 Largest Directories in /var',
+    category: 'Storage',
+    command: 'du -ah -d 1 /var 2>/dev/null | sort -hr | head -n 11',
+    description: 'Locate storage hogs inside the /var directory'
   },
   {
     id: 'snip-6',
-    title: 'Active Listening Ports',
-    category: 'Network',
-    command: 'ss -tulpn | grep LISTEN',
-    description: 'List all open TCP and UDP listening ports and processes'
+    title: 'Find Files Larger Than 100MB',
+    category: 'Storage',
+    command: 'find / -type f -size +100M -exec ls -lh {} + 2>/dev/null | awk \'{print $5, $9}\'',
+    description: 'Scan filesystem for files exceeding 100 megabytes'
   },
   {
     id: 'snip-7',
-    title: 'Clean Apt Cache & Temp Files',
-    category: 'Maintenance',
-    command: 'sudo apt-get clean && sudo apt-get autoremove -y',
-    description: 'Free up disk space from package caches'
+    title: 'Disk I/O Statistics',
+    category: 'Storage',
+    command: 'iostat -xz 1 3 2>/dev/null || vmstat 1 5',
+    description: 'Check disk read/write throughput and I/O wait times'
   },
+
+  // Memory & Processes
   {
     id: 'snip-8',
-    title: 'Live System Log Follow',
-    category: 'Logs',
+    title: 'Memory Usage Breakdown',
+    category: 'Memory',
+    command: 'free -h --wide',
+    description: 'RAM, swap, buffers, and cache availability'
+  },
+  {
+    id: 'snip-9',
+    title: 'Top 10 RAM Consuming Processes',
+    category: 'Memory',
+    command: 'ps -eo pid,user,%mem,%cpu,comm --sort=-%mem | head -n 11',
+    description: 'List processes with the highest memory consumption'
+  },
+  {
+    id: 'snip-10',
+    title: 'Top 10 CPU Consuming Processes',
+    category: 'Memory',
+    command: 'ps -eo pid,user,%cpu,%mem,comm --sort=-%cpu | head -n 11',
+    description: 'List processes consuming the most CPU power'
+  },
+  {
+    id: 'snip-11',
+    title: 'Check OOM-Killer Invocations',
+    category: 'Memory',
+    command: 'dmesg -T 2>/dev/null | grep -i -E "oom|out of memory|killed process" | tail -n 20',
+    description: 'Review kernel logs for Out-Of-Memory process termination'
+  },
+
+  // Network & Connectivity
+  {
+    id: 'snip-12',
+    title: 'Active TCP & UDP Listening Ports',
+    category: 'Network',
+    command: 'ss -tulpn | grep LISTEN',
+    description: 'List open ports with process IDs and program names'
+  },
+  {
+    id: 'snip-13',
+    title: 'Network Interfaces & IP Addresses',
+    category: 'Network',
+    command: 'ip -c -br a',
+    description: 'Brief colored list of network interfaces and assigned IPs'
+  },
+  {
+    id: 'snip-14',
+    title: 'Check External Public IP',
+    category: 'Network',
+    command: 'curl -s https://ifconfig.me || curl -s https://api.ipify.org',
+    description: 'Query public outbound IP address from terminal'
+  },
+  {
+    id: 'snip-15',
+    title: 'Inspect Connections on Web Ports',
+    category: 'Network',
+    command: 'ss -tan state established "( dport = :80 or dport = :443 or sport = :80 or sport = :443 )"',
+    description: 'View active HTTP/HTTPS connections'
+  },
+
+  // Docker & Containers
+  {
+    id: 'snip-16',
+    title: 'Docker Container Table',
+    category: 'Docker',
+    command: 'docker ps --format "table {{.ID}}\\t{{.Names}}\\t{{.Status}}\\t{{.Ports}}"',
+    description: 'List active Docker containers with names and port mappings'
+  },
+  {
+    id: 'snip-17',
+    title: 'Docker Live Resource Stats',
+    category: 'Docker',
+    command: 'docker stats --no-stream --format "table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\\t{{.NetIO}}"',
+    description: 'One-time snapshot of CPU and memory used per container'
+  },
+  {
+    id: 'snip-18',
+    title: 'Docker Disk Space Usage',
+    category: 'Docker',
+    command: 'docker system df',
+    description: 'View disk space used by images, containers, and volumes'
+  },
+  {
+    id: 'snip-19',
+    title: 'Clean Unused Docker Resources',
+    category: 'Docker',
+    command: 'docker system prune -f --volumes',
+    description: 'Remove stopped containers, unused networks, and dangling images'
+  },
+
+  // Nginx & Web
+  {
+    id: 'snip-20',
+    title: 'Test Nginx Config & Reload',
+    category: 'Nginx',
+    command: 'sudo nginx -t && sudo systemctl reload nginx',
+    description: 'Safely validate configuration syntax before reloading Nginx'
+  },
+  {
+    id: 'snip-21',
+    title: 'Nginx Access Log Stream',
+    category: 'Nginx',
+    command: 'tail -n 30 -f /var/log/nginx/access.log 2>/dev/null',
+    description: 'Follow live incoming web requests'
+  },
+  {
+    id: 'snip-22',
+    title: 'Nginx Error Log',
+    category: 'Nginx',
+    command: 'tail -n 30 /var/log/nginx/error.log 2>/dev/null',
+    description: 'Check latest Nginx error logs'
+  },
+
+  // Systemd & Services
+  {
+    id: 'snip-23',
+    title: 'List All Failed Services',
+    category: 'Systemd',
+    command: 'systemctl list-units --state=failed',
+    description: 'Find broken background services and crash reports'
+  },
+  {
+    id: 'snip-24',
+    title: 'Follow Systemd Journal Logs',
+    category: 'Systemd',
     command: 'journalctl -f -n 50',
-    description: 'Follow systemd journal logs live'
+    description: 'Stream live unified system logs'
+  },
+  {
+    id: 'snip-25',
+    title: 'Critical System Error Logs',
+    category: 'Systemd',
+    command: 'journalctl -p 3 -xb -n 30',
+    description: 'View the 30 most recent error/critical entries from current boot'
+  },
+
+  // Security & Authentication
+  {
+    id: 'snip-26',
+    title: 'Recent Failed SSH Logins',
+    category: 'Security',
+    command: 'grep "Failed password" /var/log/auth.log 2>/dev/null | tail -n 20 || journalctl -u ssh --grep="Failed password" -n 20',
+    description: 'Inspect potential brute-force attempts'
+  },
+  {
+    id: 'snip-27',
+    title: 'Firewall (UFW) Status & Rules',
+    category: 'Security',
+    command: 'sudo ufw status verbose 2>/dev/null || sudo iptables -L -n -v',
+    description: 'Check active firewall rules and incoming port policies'
+  },
+  {
+    id: 'snip-28',
+    title: 'Recent User Logins',
+    category: 'Security',
+    command: 'last -n 15',
+    description: 'Show recent login history and session durations'
+  },
+
+  // Maintenance
+  {
+    id: 'snip-29',
+    title: 'Apt Update & Check Upgradeable',
+    category: 'Maintenance',
+    command: 'sudo apt update && apt list --upgradable',
+    description: 'Refresh package indices and list pending security updates'
+  },
+  {
+    id: 'snip-30',
+    title: 'Vacuum Journal Logs (Keep 3 Days)',
+    category: 'Maintenance',
+    command: 'sudo journalctl --vacuum-time=3d',
+    description: 'Free up disk space consumed by old systemd log archives'
   }
 ];
 
@@ -134,9 +305,27 @@ class StorageService {
       if (fs.existsSync(CONFIG.STORAGE_FILE)) {
         const raw = fs.readFileSync(CONFIG.STORAGE_FILE, 'utf8');
         const parsed = JSON.parse(raw);
-        return {
-          hosts: parsed.hosts || [],
-          snippets: parsed.snippets || DEFAULT_SNIPPETS,
+
+        // Filter out any mock/local test hosts
+        const cleanHosts = (parsed.hosts || []).filter(h => 
+          !h.name?.toLowerCase().includes('mock') &&
+          !h.tags?.includes('testing') &&
+          h.port !== 2222
+        );
+
+        // Merge snippets so new default snippets are always available
+        const existingSnippets = parsed.snippets || [];
+        const existingIds = new Set(existingSnippets.map(s => s.id));
+        const mergedSnippets = [...existingSnippets];
+        for (const snip of DEFAULT_SNIPPETS) {
+          if (!existingIds.has(snip.id)) {
+            mergedSnippets.push(snip);
+          }
+        }
+
+        const data = {
+          hosts: cleanHosts,
+          snippets: mergedSnippets.length > 0 ? mergedSnippets : DEFAULT_SNIPPETS,
           tunnels: parsed.tunnels || [],
           settings: {
             theme: 'cyberpunk',
@@ -147,6 +336,8 @@ class StorageService {
             ...parsed.settings
           }
         };
+        this.saveData(data);
+        return data;
       }
     } catch (e) {
       console.warn('Failed to load storage, initializing fresh:', e.message);

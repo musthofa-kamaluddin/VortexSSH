@@ -150,35 +150,35 @@ export function ServerDashboard() {
             </span>
           </div>
 
-          <div className="w-full h-2.5 bg-slate-800/80 rounded-full overflow-hidden mb-3">
+          <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden mb-3">
             <div
               className={`h-full transition-all duration-500 rounded-full ${
-                cpuPercent > 80 ? 'bg-rose-500' : cpuPercent > 50 ? 'bg-amber-400' : 'bg-gradient-to-r from-cyan-500 to-indigo-500'
+                cpuPercent > 80 ? 'bg-rose-500' : cpuPercent > 50 ? 'bg-amber-400' : 'bg-blue-500'
               }`}
               style={{ width: `${Math.min(100, Math.max(0, cpuPercent))}%` }}
             ></div>
           </div>
 
-          <div className="grid grid-cols-3 text-center text-[11px] font-mono text-slate-400 bg-slate-900/60 p-2 rounded-lg border border-slate-800/60">
+          <div className="grid grid-cols-3 text-center text-[11px] font-mono text-zinc-400 bg-zinc-950 p-2 rounded border border-zinc-850">
             <div>
-              <span className="text-slate-500 block text-[10px]">USER</span>
-              <span className="text-slate-200 font-semibold">{metrics?.cpu?.user || 0}%</span>
+              <span className="text-zinc-500 block text-[10px]">USER</span>
+              <span className="text-zinc-200 font-semibold">{metrics?.cpu?.user || 0}%</span>
             </div>
             <div>
-              <span className="text-slate-500 block text-[10px]">SYSTEM</span>
-              <span className="text-slate-200 font-semibold">{metrics?.cpu?.system || 0}%</span>
+              <span className="text-zinc-500 block text-[10px]">SYSTEM</span>
+              <span className="text-zinc-200 font-semibold">{metrics?.cpu?.system || 0}%</span>
             </div>
             <div>
-              <span className="text-slate-500 block text-[10px]">IDLE</span>
-              <span className="text-slate-200 font-semibold">{metrics?.cpu?.idle || 0}%</span>
+              <span className="text-zinc-500 block text-[10px]">IDLE</span>
+              <span className="text-zinc-200 font-semibold">{metrics?.cpu?.idle || 0}%</span>
             </div>
           </div>
         </div>
 
         {/* RAM Card */}
-        <div className="glass-panel p-5 rounded-xl border border-slate-800/90 relative overflow-hidden">
+        <div className="bg-zinc-900 p-5 rounded border border-zinc-800 relative overflow-hidden">
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
               <Activity className="w-4 h-4 text-emerald-400" />
               <span>RAM Memory</span>
             </div>
@@ -189,10 +189,10 @@ export function ServerDashboard() {
             </span>
           </div>
 
-          <div className="w-full h-2.5 bg-slate-800/80 rounded-full overflow-hidden mb-3">
+          <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden mb-3">
             <div
               className={`h-full transition-all duration-500 rounded-full ${
-                memPercent > 85 ? 'bg-rose-500' : memPercent > 65 ? 'bg-amber-400' : 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                memPercent > 85 ? 'bg-rose-500' : memPercent > 65 ? 'bg-amber-400' : 'bg-emerald-500'
               }`}
               style={{ width: `${Math.min(100, Math.max(0, memPercent))}%` }}
             ></div>
@@ -236,9 +236,9 @@ export function ServerDashboard() {
                   {metrics.disks[0].used} / {metrics.disks[0].size}
                 </span>
               </div>
-              <div className="w-full h-2.5 bg-slate-800/80 rounded-full overflow-hidden mb-3">
+              <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden mb-3">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                  className="h-full bg-blue-500 rounded-full"
                   style={{ width: `${Math.min(100, Math.max(0, metrics.disks[0].percent))}%` }}
                 ></div>
               </div>
